@@ -5,16 +5,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
     backgroundColor: "#e454bc",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    paddingTop: 50,
+    paddingTop: 80,
   },
 
   viewPergunta: {
-    width: 310,
-    height: 220,
+    minHeight: 220,
+    padding: 5,
     backgroundColor: "#ee91d3",
-    marginTop: 100,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
@@ -47,9 +44,18 @@ export const styles = StyleSheet.create({
 
   buttonContainer: {
     borderRadius: 30,
-    marginTop: 20,
+    marginVertical: 20,
     justifyContent: "center",
     marginBottom: 10,
     width: 300,
   },
+
+  textoBase: {
+    color: "white", 
+    fontSize: 16, 
+    marginTop: 10, 
+    textAlign: "center", 
+    paddingHorizontal: 5 
+  },
+
 });

@@ -1,73 +1,46 @@
-import {
-  Text,
-  View,
-  Image,
-  Button,
-  FlatList,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { Text, View, Image, Button, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { styles } from "./styles";
-import { qz } from "./../../assets/quiz-logo1.png";
-import {
-  getFirestore,
-  getDoc,
-  doc,
-  getDocs,
-  collection,
-} from "firebase/firestore";
+import { getFirestore, getDoc, doc, getDocs, collection, query, orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import TelaResposta from "./resposta";
 import { useNavigation } from '@react-navigation/native'
+import Pergunta from "./components/pergunta";
+import Resultado from "./components/resultado";
 
 export default function TelaPerguntas() {
   const navigation = useNavigation();
-  const [perguntaNumero, setPerguntaNumero] = useState(0);
-  const [ telaResposta, setTelaResposta ] = useState(false);
-  const [pergunta, setPergunta] = useState();
-  const [perguntas, setPerguntas] = useState([]);
-  const [alternativas, setAlternativas] = useState([]);
+  const [ perguntaNumero, setPerguntaNumero ] = useState(1);
+  const [ tela, setTela ] = useState('pergunta'); //pergunta | resultado
+  const [ pontos, setPontos ] = useState(0);
+  const [ totalPerguntas, setTotalPerguntas ] = useState(0);
+  const [ alternativaSelecionada, setAlternativaSelecionada ] = useState(null);
+  const [ pergunta, setPergunta ] = useState(null);
+  const [ perguntas, setPerguntas ] = useState([]);
   const db = getFirestore();
-
-
   // ===============================================================================
-  const buscarPerguntas = async () => {
-    await getDocs(collection(db, 'perguntas'))
+  const buscarProximaPerguntas = async () => {
+    await getDocs(query(collection(db, 'perguntas'), orderBy('data-cadastro')))
     .then(async snapshots => {
-      
         let dados = []  
-          for(let i = 0; i < snapshots.docs.length; i++) {
-
-            const doc = snapshots.docs[i];
-          
-            const resultadoAlternativa = await getDocs(
-              collection(db, `perguntas/${doc.id}/alternativas`)
-            );
-
-            const alternativas = [];
-            if (resultadoAlternativa.docs.length > 0) {
-              const alternativasDB = resultadoAlternativa.docs[0].data();
-    
-              Object.keys(alternativasDB).forEach((letra) => {
-                alternativas.push({ letra, descricao: alternativasDB[letra] });
-              });
-            }
-            const data = doc.data()
-            dados.push({...data, alternativas})
-          }
-          setPerguntas(dados);
-        })
+        for(let i = 0; i < snapshots.docs.length; i++) {
+          const doc = snapshots.docs[i];
+          dados.push(doc.data())
+        }
+        setPerguntas(dados);  
+        //Existe perguntas?
+        if (dados.length > 0) {
+          setPergunta(dados[0]);
+          setPerguntaNumero(1);
+          setTotalPerguntas(dados.length);
+        } else {
+          navigation.navigate('telaPrincipal');
+        }
+    })
   }
-  
-
-  const buscarPergunta = async (perguntaNumero) => {
+  // ============= 
+  const buscarProximaPergunta = async (perguntaNumero) => {
     try {
-
-      console.log(perguntaNumero);
-      console.log(perguntas);
-      if (perguntas[perguntaNumero]) {
-        setPergunta(perguntas[perguntaNumero]);
-        setAlternativas(perguntas[perguntaNumero].alternativas);
+      if (perguntas[perguntaNumero-1]) {
+        setPergunta(perguntas[perguntaNumero-1]);
       } else {
         navigation.navigate('telaPrincipal');
       }
@@ -75,76 +48,34 @@ export default function TelaPerguntas() {
       console.log(e);
     }
   };
-
-  const selecionarAlternativa = (letra) => {
-    setTelaResposta(true);
+  // =============
+  const handleSelecionarAlternativa = (opc) => {
+    setAlternativaSelecionada(opc);
+    if (opc == pergunta.alternativaCorreta) {
+      setPontos(pontos+1);
+    }
+    setTela('resultado');
   }
-
-  const avancar = () => {
+  // ==============
+  const handleAvancar = () => {
     console.log('aaaaaaaaaaaaaaaaaaaaaa')
-    buscarPergunta(perguntaNumero+1)
-    setTelaResposta(false)
-    setPerguntaNumero(perguntaNumero+1)
+    buscarProximaPergunta(perguntaNumero+1)
+    setTela('false')
   }
-
-
+  // ==============
   useEffect(() => {
-    (async () => {
-      await buscarPerguntas();
-    })()
+    setPontos(0);
+    (async () => await buscarProximaPerguntas())()
   }, []);
-
-  useEffect(() => {
-    if (perguntas.length > 0)
-     buscarPergunta(perguntaNumero);
-  }, [perguntas])
-
+  // ==============================================
   return (
-    <>
-    {  !telaResposta && (<View style={styles.viewPrincipal}>
-      {/* <Image
-        source={require("./../../assets/quiz-logo.png")}
-        style={{ width: "80%", height: 100, resizeMode: "contain" }}
-      ></Image> */}
-
-      <View style={styles.viewPergunta}>  
-        <Text style={{ color: "white", fontSize: 14 }}>
-          Questão {perguntaNumero+1}
-        </Text>
-        <Text
-          style={{
-            color: "white",
-            fontSize: 16,
-            paddingTop: 20,
-            textAlign: "center",
-            paddingHorizontal: 5,
-          }}
-        >
-          {pergunta && pergunta.titulo}
-        </Text>
-      </View>
-
-      <View style={{ justifyContent: "space-between" }}>
-        <FlatList
-          data={alternativas}
-          keyExtractor={(item) => item.letra}
-          renderItem={({ item }) => (
-            <>
-             {item.descricao && <TouchableOpacity onPress={() => selecionarAlternativa(item.letra)}>
-                <View style={styles.viewAlternativa}>
-                  <Text style={styles.viewAlternativaText}>{item.descricao}</Text>
-                </View>
-              </TouchableOpacity>}
-            </>
-          )}
-        />
-      </View>
-      {/* <View style={styles.buttonContent}>
-        <Button title="Voltar" color={"#A193BE"}></Button>
-      </View> */}
-    </View>)}
-    { (pergunta && telaResposta) && <TelaResposta correta={pergunta.correta} avancar={avancar} />}
-    
-    </>
+    <View style={styles.viewPrincipal}>
+      <ScrollView style={{flex: 1}}>
+        <View style={{flex: 1, alignItems: 'stretch', paddingHorizontal: 40}}>
+          { tela == 'pergunta' && pergunta && <Pergunta pergunta={pergunta} perguntaNumero={perguntaNumero} selecionarAlternativa={handleSelecionarAlternativa}/>}
+          { tela == 'resultado' && pergunta && <Resultado pergunta={pergunta} alternativaSelecionada={alternativaSelecionada} doAvancar={handleAvancar}/>}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
