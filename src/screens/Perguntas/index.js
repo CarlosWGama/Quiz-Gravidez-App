@@ -4,21 +4,23 @@ import { getFirestore, getDoc, doc, getDocs, collection, query, orderBy } from "
 import { useEffect, useState } from "react";
 import { useNavigation } from '@react-navigation/native'
 import Pergunta from "./components/pergunta";
+import Resposta from "./components/resposta";
 import Resultado from "./components/resultado";
 
 export default function TelaPerguntas() {
   const navigation = useNavigation();
   const [ perguntaNumero, setPerguntaNumero ] = useState(1);
-  const [ tela, setTela ] = useState('pergunta'); //pergunta | resultado
+  const [ tela, setTela ] = useState('pergunta'); //pergunta | resposta | resultado
   const [ pontos, setPontos ] = useState(0);
   const [ totalPerguntas, setTotalPerguntas ] = useState(0);
   const [ alternativaSelecionada, setAlternativaSelecionada ] = useState(null);
+  const [ formularios, setFormularios ] = useState(null);
   const [ pergunta, setPergunta ] = useState(null);
   const [ perguntas, setPerguntas ] = useState([]);
   const db = getFirestore();
   // ===============================================================================
   const buscarProximaPerguntas = async () => {
-    await getDocs(query(collection(db, 'perguntas'), orderBy('data-cadastro')))
+    await getDocs(query(collection(db, 'perguntas'), orderBy('data-cadastro', 'desc')))
     .then(async snapshots => {
         let dados = []  
         for(let i = 0; i < snapshots.docs.length; i++) {
@@ -36,13 +38,22 @@ export default function TelaPerguntas() {
         }
     })
   }
+  // =============
+  const buscarFormularios = async () => {
+    const dados = await getDoc(doc(db, 'formularios', 'unico'))
+    if (dados.exists())
+      setFormularios(dados.data())
+  }
   // ============= 
-  const buscarProximaPergunta = async (perguntaNumero) => {
+  const buscarProximaPergunta = async () => {
     try {
-      if (perguntas[perguntaNumero-1]) {
-        setPergunta(perguntas[perguntaNumero-1]);
+      //Verifica se existe mais alguma pergunta
+      if (perguntas[perguntaNumero]) {
+        setPergunta(perguntas[perguntaNumero]);
+        setPerguntaNumero(perguntaNumero+1);
+        setTela('pergunta')
       } else {
-        navigation.navigate('telaPrincipal');
+        setTela('resultado')
       }
     } catch (e) {
       console.log(e);
@@ -54,18 +65,17 @@ export default function TelaPerguntas() {
     if (opc == pergunta.alternativaCorreta) {
       setPontos(pontos+1);
     }
-    setTela('resultado');
+    setTela('resposta');
   }
-  // ==============
-  const handleAvancar = () => {
-    console.log('aaaaaaaaaaaaaaaaaaaaaa')
-    buscarProximaPergunta(perguntaNumero+1)
-    setTela('false')
+  // ============
+  const finalizar = () => {
+    navigation.navigate('telaPrincipal');
   }
   // ==============
   useEffect(() => {
     setPontos(0);
     (async () => await buscarProximaPerguntas())()
+    buscarFormularios();
   }, []);
   // ==============================================
   return (
@@ -73,7 +83,8 @@ export default function TelaPerguntas() {
       <ScrollView style={{flex: 1}}>
         <View style={{flex: 1, alignItems: 'stretch', paddingHorizontal: 40}}>
           { tela == 'pergunta' && pergunta && <Pergunta pergunta={pergunta} perguntaNumero={perguntaNumero} selecionarAlternativa={handleSelecionarAlternativa}/>}
-          { tela == 'resultado' && pergunta && <Resultado pergunta={pergunta} alternativaSelecionada={alternativaSelecionada} doAvancar={handleAvancar}/>}
+          { tela == 'resposta' && pergunta && <Resposta pergunta={pergunta} alternativaSelecionada={alternativaSelecionada} doAvancar={buscarProximaPergunta}/>}
+          { tela == 'resultado' && pergunta && <Resultado pontos={pontos} formularios={formularios} totalPerguntas={totalPerguntas} doFinalizar={finalizar}/>}
         </View>
       </ScrollView>
     </View>

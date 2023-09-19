@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { View, Text, Image, Button, Animated } from "react-native"
-import { styles } from "./../styles";
+import { styles } from "../styles";
+import { Linking } from 'react-native';
 
-function ResultadoComponent({pergunta, alternativaSelecionada, doAvancar}) {
+function ResultadoComponent({totalPerguntas, pontos, formularios, doFinalizar}) {
 
     const anim = useRef(new Animated.Value(0));
-
+    // =================================================
     const shake = useCallback(() => {
       // makes the sequence loop
       Animated.loop(
@@ -34,39 +35,36 @@ function ResultadoComponent({pergunta, alternativaSelecionada, doAvancar}) {
         { iterations: 4 }
       ).start();
     }, []);
-
+    // =================
+    const abrirQuestionario = (url) => {
+      Linking.openURL(url)      
+    }
+    // =================
     useEffect(() => {
         shake()
-    }, [alternativaSelecionada])
- 
+    }, [pontos])
+    // =================================================
     return (
       <>
         <View style={styles.viewPergunta}>  
             <Animated.View style={{ transform: [{ translateX: anim.current }] }}>
-                {alternativaSelecionada == pergunta.alternativaCorreta && <>
-                    <Image source={require('./../../../assets/quiz-correto.png')} style={{width: 100, height: 100}}/>
-                    <Text style={{ color: "lightgreen", fontSize: 18, fontWeight: 'bold'  }}>  ACERTOU! </Text>
-                </>}
-                {alternativaSelecionada != pergunta.alternativaCorreta && <>
-                    <Image source={require('./../../../assets/quiz-errado.png')}  style={{width: 100, height: 100}}/>
-                    <Text style={{ color: "tomato", fontSize: 18, fontWeight: 'bold' }}>  ERROU! </Text>
-                </>}
+              { pontos < (totalPerguntas/2) && 
+                <Text style={{ color: "tomato", fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>  Você atingiu {pontos} de {totalPerguntas}.{"\n"} Apesar de uma pontuação mais baixa, temos certeza que você aprendeu bastante com nossas perguntas! </Text>
+              }
+              { pontos >= (totalPerguntas/2) && 
+                <Text style={{ color: "turquoise", fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>  Você atingiu {pontos} de {totalPerguntas}.{"\n"} Parabéns! Você acertou a maioria das perguntas! </Text>
+              }
+
             </Animated.View>
 
-            <Text style={styles.textoBase}>Alternativa selecionada: {[pergunta.alternativa1,pergunta.alternativa2,pergunta.alternativa3,pergunta.alternativa4][alternativaSelecionada-1]}</Text>
-            <Text style={styles.textoBase}>Alternativa correta: {[pergunta.alternativa1,pergunta.alternativa2,pergunta.alternativa3,pergunta.alternativa4][pergunta.alternativaCorreta-1]}</Text>
-            
-            {/* TITULO */}
-            <Text style={styles.textoBase}> {pergunta.titulo} </Text>
-
-            {/* IMAGEM */}
-            {pergunta.perguntaImage && <Image source={{uri: pergunta.respostaImagem}} style={{ width: 150, height: 150, resizeMode: "contain" }} ></Image>}
-
-            {/* RESPOTA */}
-            <Text style={styles.textoBase}> {pergunta.resposta} </Text>
+            {formularios && <>
+              <Text style={styles.textoBase}> Agora é sua vez. Nos ajude avaliando nosso aplicativo! </Text>
+              <Button buttonStyle={styles.buttonContainer} title="QUESTIONÁRIO USUARIO COMUM" color='#ee91d3' onPress={() => abrirQuestionario(formularios.usuario)}></Button>
+              <Button buttonStyle={styles.buttonContainer} title="QUESTIONÁRIO USUARIO DE TI" color='#ee91d3' onPress={() => abrirQuestionario(formularios.tecnico)}></Button>
+            </>}
         </View>
 
-        <Button buttonStyle={styles.buttonContainer} title="Proximo >>>" color='#ee91d3' onPress={doAvancar} ></Button>
+        <Button buttonStyle={styles.buttonContainer} title="FINALIZAR" color='#ee91d3' onPress={doFinalizar} ></Button>
     </>
     )
 }
