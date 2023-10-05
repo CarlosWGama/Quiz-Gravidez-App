@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   },
 
   viewAlternativa: {
-    height: 44,
+    minHeight: 44,
     width: "100%",
     borderRadius: 12,
     backgroundColor: "#ee91d3",
