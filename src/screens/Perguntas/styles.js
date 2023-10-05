@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
   },
 
   viewAlternativaText: {
-    color: "white",
+    color: "black",
     fontSize: 16,
   },
 
@@ -48,10 +48,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 10,
     width: 300,
+    fontSize: 10
   },
 
   textoBase: {
-    color: "white", 
+    color: "black", 
     fontSize: 16, 
     marginTop: 10, 
     textAlign: "center", 

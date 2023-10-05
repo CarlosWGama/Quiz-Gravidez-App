@@ -57,18 +57,18 @@ function RespostaComponent({pergunta, alternativaSelecionada, doAvancar}) {
             <Text style={[styles.textoBase, {fontSize: 12, marginTop: 0}]}>Alternativa correta: {[pergunta.alternativa1,pergunta.alternativa2,pergunta.alternativa3,pergunta.alternativa4][pergunta.alternativaCorreta-1]}</Text>
             
             {/* TITULO */}
-            <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: 'lightgrey'}}>PERGUNTA</Text>
+            <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: '#CD3700'}}>PERGUNTA</Text>
             <Text style={styles.textoBase}> {pergunta.titulo} </Text>
 
             {/* IMAGEM */}
             {pergunta.perguntaImage && <Image source={{uri: pergunta.respostaImagem}} style={{ width: 150, height: 150, resizeMode: "contain" }} ></Image>}
 
             {/* RESPOTA */}
-            <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: 'lightgrey'}}>EXPLICAÇÃO</Text>
+            <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: '#CD3700'}}>EXPLICAÇÃO</Text>
             <Text style={styles.textoBase}> {pergunta.resposta} </Text>
         </View>
 
-        <Button buttonStyle={styles.buttonContainer} title="Proximo >>>" color='#ee91d3' onPress={doAvancar} ></Button>
+        <Button buttonStyle={styles.buttonContainer} title="Proximo >>>" color='black' onPress={doAvancar} ></Button>
     </>
     )
 }
