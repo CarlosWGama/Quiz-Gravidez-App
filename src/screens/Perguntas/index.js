@@ -20,7 +20,7 @@ export default function TelaPerguntas() {
   const db = getFirestore();
   // ===============================================================================
   const buscarProximaPerguntas = async () => {
-    await getDocs(query(collection(db, 'perguntas'), orderBy('data-cadastro', 'desc')))
+    await getDocs(query(collection(db, 'perguntas'), orderBy('data-cadastro', 'asc')))
     .then(async snapshots => {
         let dados = []  
         for(let i = 0; i < snapshots.docs.length; i++) {
