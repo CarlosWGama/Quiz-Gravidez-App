@@ -52,10 +52,7 @@ function RespostaComponent({pergunta, alternativaSelecionada, doAvancar}) {
                     <Text style={{ color: "tomato", fontSize: 18, fontWeight: 'bold' }}>  ERROU! </Text>
                 </>}
             </Animated.View>
-
-            <Text style={[styles.textoBase, {fontSize: 12}]}>Alternativa selecionada: {[pergunta.alternativa1,pergunta.alternativa2,pergunta.alternativa3,pergunta.alternativa4][alternativaSelecionada-1]}</Text>
-            <Text style={[styles.textoBase, {fontSize: 12, marginTop: 0}]}>Alternativa correta: {[pergunta.alternativa1,pergunta.alternativa2,pergunta.alternativa3,pergunta.alternativa4][pergunta.alternativaCorreta-1]}</Text>
-            
+          
             {/* TITULO */}
             <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: '#CD3700'}}>PERGUNTA</Text>
             <Text style={styles.textoBase}> {pergunta.titulo} </Text>
