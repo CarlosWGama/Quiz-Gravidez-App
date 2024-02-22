@@ -10,10 +10,10 @@ function PerguntaComponent({pergunta, perguntaNumero, selecionarAlternativa}) {
      
       <View style={styles.viewPergunta}>  
         {/* NUMERO QUESTÃO */}
-        <Text style={{ color: "black", fontSize: 20 }}>  QUESTÃO {perguntaNumero} </Text>
+        <Text style={{ color: "#655e69", fontSize: 20 }}>  QUESTÃO {perguntaNumero} </Text>
         
         {/* TITULO */}
-        <Text style={{ color: "black", fontSize: 14, marginTop: 20, textAlign: "center" }}> {pergunta.titulo} </Text>
+        <Text style={{ color: "#655e69", fontSize: 14, marginTop: 20, textAlign: "center" }}> {pergunta.titulo} </Text>
 
         {/* IMAGEM */}
         {pergunta.perguntaImage && <Image

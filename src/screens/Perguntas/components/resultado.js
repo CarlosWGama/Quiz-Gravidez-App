@@ -49,10 +49,10 @@ function ResultadoComponent({totalPerguntas, pontos, formularios, doFinalizar}) 
         <View style={styles.viewPergunta}>  
             <Animated.View style={{ transform: [{ translateX: anim.current }] }}>
               { pontos < (totalPerguntas/2) && 
-                <Text style={{ color: "red", fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>  Você atingiu {pontos} de {totalPerguntas}.{"\n"} Apesar de uma pontuação mais baixa, acreditamos que você aprendeu bastante sobre a sua saúde bucal! </Text>
+                <Text style={{ color: "#bc0b27", fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>  Você atingiu {pontos} de {totalPerguntas}.{"\n"} Apesar de uma pontuação mais baixa, acreditamos que você aprendeu bastante sobre a sua saúde bucal! </Text>
               }
               { pontos >= (totalPerguntas/2) && 
-                <Text style={{ color: "turquoise", fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}> PARABENS! {"\n"} Você atingiu {pontos} de {totalPerguntas}.{"\n"}  Você aprendeu bastante sobre a sua saúde bucal! </Text>
+                <Text style={{ color: "#3218e9", fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}> PARABENS! {"\n"} Você atingiu {pontos} de {totalPerguntas}.{"\n"}  Você aprendeu bastante sobre a sua saúde bucal! </Text>
               }
 
             </Animated.View>
@@ -68,7 +68,14 @@ function ResultadoComponent({totalPerguntas, pontos, formularios, doFinalizar}) 
             </View>}
         </View>
 
-        <Button buttonStyle={styles.buttonContainer} title="FINALIZAR" color='black' onPress={doFinalizar} ></Button>
+        {/* BOTÃO */}
+        <TouchableOpacity onPress={doFinalizar} >
+          <View style={styles.button}>
+            <Text style={{fontWeight:'bold'}}>FINALIZAR</Text>
+          </View>
+        </TouchableOpacity>
+
+        
     </>
     )
 }

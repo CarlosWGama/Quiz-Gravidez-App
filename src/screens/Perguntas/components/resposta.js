@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { View, Text, Image, Button, Animated } from "react-native"
+import { View, Text, Image, Button, Animated, TouchableOpacity } from "react-native"
 import { styles } from "../styles";
 
 function RespostaComponent({pergunta, alternativaSelecionada, doAvancar}) {
@@ -45,27 +45,33 @@ function RespostaComponent({pergunta, alternativaSelecionada, doAvancar}) {
             <Animated.View style={{ transform: [{ translateX: anim.current }] }}>
                 {alternativaSelecionada == pergunta.alternativaCorreta && <>
                     <Image source={require('./../../../assets/quiz-correto.png')} style={{width: 100, height: 100}}/>
-                    <Text style={{ color: "lightgreen", fontSize: 18, fontWeight: 'bold'  }}>  ACERTOU! </Text>
+                    {/* <Text style={{ color: "green", fontSize: 18, fontWeight: 'bold'  }}>  ACERTOU! </Text> */}
                 </>}
                 {alternativaSelecionada != pergunta.alternativaCorreta && <>
                     <Image source={require('./../../../assets/quiz-errado.png')}  style={{width: 100, height: 100}}/>
-                    <Text style={{ color: "tomato", fontSize: 18, fontWeight: 'bold' }}>  ERROU! </Text>
+                    {/* <Text style={{ color: "tomato", fontSize: 18, fontWeight: 'bold' }}>  ERROU! </Text> */}
                 </>}
             </Animated.View>
           
             {/* TITULO */}
-            <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: '#CD3700'}}>PERGUNTA</Text>
+            <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: '#655e69'}}>PERGUNTA</Text>
             <Text style={styles.textoBase}> {pergunta.titulo} </Text>
 
             {/* IMAGEM */}
             {pergunta.perguntaImage && <Image source={{uri: pergunta.respostaImagem}} style={{ width: 150, height: 150, resizeMode: "contain" }} ></Image>}
 
             {/* RESPOTA */}
-            <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: '#CD3700'}}>EXPLICAÇÃO</Text>
+            <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: -15, color: '#655e69'}}>EXPLICAÇÃO</Text>
             <Text style={styles.textoBase}> {pergunta.resposta} </Text>
         </View>
 
-        <Button buttonStyle={styles.buttonContainer} title="Proximo >>>" color='black' onPress={doAvancar} ></Button>
+        <TouchableOpacity onPress={doAvancar} >
+          <View style={styles.button}>
+            <Text style={{fontWeight:'bold'}}>PRÓXIMO</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* <Button title="Proximo >>>" color='#faf6f8' ></Button> */}
     </>
     )
 }

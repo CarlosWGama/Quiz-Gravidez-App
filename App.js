@@ -1,7 +1,7 @@
 import { View } from 'react-native';
-import { initializeApp } from "@firebase/app";
+import { initializeApp } from "firebase/app";
 import firebaseConfig from './src/config/firebase';
-import { getFirestore } from "@firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { NavegacaoPrinciapl } from './src/navigations';
 
 export default function App() {
