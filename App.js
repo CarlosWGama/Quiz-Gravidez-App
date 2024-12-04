@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app";
 import firebaseConfig from './src/config/firebase';
 import { getFirestore } from "firebase/firestore";
 import { NavegacaoPrinciapl } from './src/navigations';
+import './gesture-handler';
+
 
 export default function App() {
 
@@ -11,6 +13,7 @@ export default function App() {
   return (
     <View style={{flex:1}}>
       <NavegacaoPrinciapl/>
+      
     </View>
   )
 }
